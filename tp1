@@ -1,0 +1,28 @@
+import requests
+import json 
+
+def fetch_all_players_by_season(season):
+    endpoint = f"https://nba-stats-db.herokuapp.com/api/players/season/{season}"
+    response = requests.get(endpoint)
+    if response.status_code == 200:
+        data = response.json()
+        print(data)  
+    else:
+        print(f"Une erreur s'est produite : {response.status_code}")
+
+def fetch_top_scorers_by_season(season):
+    endpoint = f"https://nba-stats-db.herokuapp.com/api/topscorers/season/{season}"
+    response = requests.get(endpoint)
+    if response.status_code == 200:
+        data = response.json()
+        print(data)  
+    else:
+        print(f"Une erreur s'est produite : {response.status_code}")
+
+season = "2022"  
+player_name = "LeBron James"  
+api_key = "https://documenter.getpostman.com/view/24232555/2s93shzpR3"  
+
+fetch_all_players_by_season(season)
+fetch_top_scorers_by_season(season)
+
