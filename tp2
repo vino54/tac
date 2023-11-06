@@ -1,0 +1,643 @@
+
+Extraction de Keywords
+Imports
+import os
+import yake
+Extraire les mots clés d'un document avec Yake
+https://github.com/LIAAD/yake
+
+# Instantier l'extracteur de mots clés
+kw_extractor = yake.KeywordExtractor(lan="fr", top=50)
+kw_extractor
+<yake.yake.KeywordExtractor at 0x10f0e8bd0>
+# Lister les Fichiers
+data_path = "../data/txt/"
+files = os.listdir(data_path)
+# Imprimer le nombre de fichiers identifiés
+len(files)
+7936
+# Les dix premiers fichiers
+files[:10]
+['KB_JB838_1906-11-12_01-00004.txt',
+ 'KB_JB838_1970-06-13_01-00012.txt',
+ 'KB_JB838_1922-01-02_01-00007.txt',
+ 'KB_JB838_1952-02-29_01-00010.txt',
+ 'KB_JB838_1960-10-30_01-00007.txt',
+ 'KB_JB838_1966-08-30_01-00011.txt',
+ 'KB_JB838_1923-07-29_01-00003.txt',
+ 'KB_JB838_1893-11-28_01-00004.txt',
+ 'KB_JB838_1932-06-03_01-00011.txt',
+ 'KB_JB838_1961-12-30_01-00015.txt']
+# Choisir un fichier
+this_file = files[0]
+this_file
+'KB_JB838_1906-11-12_01-00004.txt'
+# Récupérer le texte du fichier
+text = open(os.path.join(data_path, this_file), 'r', encoding='utf-8').read()
+text[:500]
+"mi imnri r i «i i HMU ' î/tx-'l : Marché tenu hors villa, la 9. — U a été vaain Si téicj »M races indigènes de fr. 31<) à 5S'k 131 de. rasa îicHaKdui'te, do (r. 3S0 h 710. taureaux iallsènas,>ia ù\\ — à — ; 0II. hollandais, dufr. 0. — à 9.— la îdto- Vachei laitières: Bn vante 1Q. vendues 3\\ au prix la 410 à • «i h\\; génisses, Kl. '.9. i l. 2 i. id. da 370 i 6lütr. Marché a<u porcs. — Catégorie de lt ilashtya: ‘237 on vente; vendus 1 M.do ‘2 i.— à ;:, L —;i.l. des t'innlroV- I3ie;» vente, vendus 9"
+# Extraire les mots clés de ce texte
+keywords = kw_extractor.extract_keywords(text)
+keywords
+[('maison', 0.003077658230936859),
+ ('rue', 0.0030922660251063282),
+ ('Maison de rentier', 0.007451367309712659),
+ ('Bruxelles', 0.00835766510324691),
+ ('Maison de commerce', 0.008414175763105169),
+ ('contenant', 0.010937362215490024),
+ ('centiares', 0.012015936317427473),
+ ('Demain lundi', 0.012279832515679162),
+ ('notaire', 0.0123644825432676),
+ ('Vendue', 0.016154270207986227),
+ ('louée', 0.01619773308081534),
+ ('lundi', 0.0163930958621132),
+ ('prix', 0.018093579312602026),
+ ('rentier', 0.019894369366872527),
+ ('are', 0.020215747658765645),
+ ('commerce', 0.02922268570960821),
+ ('ruo', 0.032678799542358944),
+ ('lieu', 0.03290812001961487),
+ ('rue Haute', 0.0371357795514965),
+ ('demain lundi Carmen', 0.037591252103167105),
+ ('rue Gallait', 0.03767923417337973),
+ ('Froment', 0.03780746434234731),
+ ('Notaires', 0.0391541947203474),
+ ('heures', 0.0397856549783574),
+ ('maison mortuaire', 0.04283100128039825),
+ ('Demain', 0.04598612822626426),
+ ('Portée', 0.04684343739163711),
+ ('rue des Foulons', 0.05001351044082737),
+ ('Grand', 0.05226799929542502),
+ ('ares', 0.05256094391279068),
+ ('Notaire Van', 0.05315813361372486),
+ ('novembre', 0.054069631759074546),
+ ('Antoinette', 0.05451233183112977),
+ ('façade', 0.0548678062379408),
+ ('soir', 0.058835484480497816),
+ ('maisons qu’elle', 0.058950226506789216),
+ ('d’une maison', 0.06138185502499655),
+ ('jeune', 0.06348307909705884),
+ ('rue Villa Hermosa', 0.06398895017145759),
+ ('mort', 0.06565624946914618),
+ ('HMU', 0.06790146509921824),
+ ('paumer', 0.06826856904611513),
+ ('Monsieur', 0.06869404925106176),
+ ('d’une', 0.0688311955177894),
+ ('c’est', 0.07328324293975098),
+ ('demande', 0.0738305179776643),
+ ('rue Villa', 0.07539889674235328),
+ ('qu’elle', 0.0772989656667203),
+ ('l’école', 0.07786285461286527),
+ ('SUPERBE MAISON', 0.0783333471903087)]
+# Ne garder que les mots-clés relatifs à l'année 1969
+kept = []
+for kw, score in keywords:
+    if '1969' in kw:
+        kept.append(kw)
+kept
+[]
+Faire la même opération sur tous les documents
+## Faire la même opération sur tous les documents
+for f in sorted(files)[:10]:
+    text = open(os.path.join(data_path, f), 'r', encoding="utf-8").read()
+    keywords = kw_extractor.extract_keywords(text)
+    kept = []
+    for kw, score in keywords:
+        if '1969' in kw:
+            kept.append(kw)
+    print(f"{f} mentions these keywords related to 1969: {', '.join(kept)}...")
+KB_JB838_1887-12-22_01-00001.txt mentions these keywords related to 1969: ...
+KB_JB838_1887-12-22_01-00002.txt mentions these keywords related to 1969: ...
+KB_JB838_1887-12-22_01-00003.txt mentions these keywords related to 1969: ...
+KB_JB838_1887-12-22_01-00004.txt mentions these keywords related to 1969: ...
+KB_JB838_1887-12-22_01-00005.txt mentions these keywords related to 1969: ...
+KB_JB838_1887-12-22_01-00006.txt mentions these keywords related to 1969: ...
+KB_JB838_1887-12-23_01-00001.txt mentions these keywords related to 1969: ...
+KB_JB838_1887-12-23_01-00002.txt mentions these keywords related to 1969: ...
+KB_JB838_1887-12-24_01-00001.txt mentions these keywords related to 1969: ...
+KB_JB838_1887-12-24_01-00002.txt mentions these keywords related to 1969: ...
+Nuages de mots
+Imports et stopwords
+from collections import Counter
+from wordcloud import WordCloud
+import os
+import nltk
+nltk.download('stopwords')
+from nltk.corpus import stopwords
+from IPython.display import Image
+[nltk_data] Downloading package stopwords to /Users/apple/nltk_data...
+[nltk_data]   Package stopwords is already up-to-date!
+# Stopwords (Idem que dans s1)
+sw = stopwords.words("french")
+sw += ["les", "plus", "cette", "fait", "faire", "être", "deux", "comme", "dont", "tout",
+       "ils", "bien", "sans", "peut", "tous", "après", "ainsi", "donc", "cet", "sous",
+       "celle", "entre", "encore", "toutes", "pendant", "moins", "dire", "cela", "non",
+       "faut", "trois", "aussi", "dit", "avoir", "doit", "contre", "depuis", "autres",
+       "van", "het", "autre", "jusqu", "ville", "rossel", "dem"]
+sw = set(sw)
+Créer un fichier contenant le texte de tous les journaux d'une année donnée
+# Choisir une année
+year = 1969
+# Lister les fichiers de cette année
+data_path = '../data'
+txt_path = '../data/txt'
+txts = [f for f in os.listdir(txt_path) if os.path.isfile(os.path.join(txt_path, f)) and str(year) in f]
+len(txts)
+100
+# Stocker le contenu de ces fichiers dans une liste
+content_list = []
+for txt in txts:
+    with open(os.path.join(txt_path, txt), 'r', encoding='utf-8') as f:
+        content_list.append(f.read())
+# Compter le nombre d'éléments (=fichiers) dans la liste
+len(content_list)
+100
+# Imprimer les 200 premiers caractères du contenu du premier fichier
+content_list[0][0:200]
+'Ets VANDEN BOUDE s.a. *700, chaussée de Mons Anderlectit * Bruxelles 7 demandent : ELECTRICIENS QUALIFIES (installation basse tension) PLOMBIERS . sachant conduire si possible MAGASINIERS (pour dépôt '
+# Ecrire tout le contenu dans un fichier temporaire
+temp_path = '../data/tmp'
+if not os.path.exists(temp_path):
+    os.mkdir(temp_path)
+with open(os.path.join(temp_path, f'{year}.txt'), 'w', encoding='utf-8') as f:
+    f.write(' '.join(content_list))
+# Imprimer le contenu du fichier et constater les "déchets"
+with open(os.path.join(temp_path, f'{year}.txt'), 'r', encoding='utf-8') as f:
+    before = f.read()
+
+before[:500]
+'Ets VANDEN BOUDE s.a. *700, chaussée de Mons Anderlectit * Bruxelles 7 demandent : ELECTRICIENS QUALIFIES (installation basse tension) PLOMBIERS . sachant conduire si possible MAGASINIERS (pour dépôt rue de la Roue) Place stable et d’avenir dans une firme en » continuelle expansion. Bonne rémunération. Prière de s’adresser au « Service du Personnel », av. Doct. Zamenhof - Anderlecht-Veeweyde - Tél. 23.00.80 (poste 34) - Autobus 46 - Trams : A - H - L - Z. 370879 A n « *♦ 44 H 44 44 | H H iî 8 s '
+Nettoyer le fichier à l'aide d'une fonction de nettoyage
+Créer la fonction de nettoyage (à adapter)
+def clean_text(year, folder=None):
+    if folder is None:
+        input_path = f"{year}.txt"
+        output_path = f"{year}_clean.txt"
+    else:
+        input_path = f"{folder}/{year}.txt"
+        output_path = f"{folder}/{year}_clean.txt"
+    output = open(output_path, "w", encoding='utf-8')
+    with open(input_path, 'r', encoding='utf-8') as f:
+        text = f.read()
+        words = nltk.wordpunct_tokenize(text)
+        kept = [w.upper() for w in words if len(w) > 2 and w.isalpha() and w.lower() not in sw]
+        kept_string = " ".join(kept)
+        output.write(kept_string)
+    return f'Output has been written in {output_path}!'
+Appliquer la fonction sur le fichier complet de l'année
+clean_text(year, folder=temp_path)
+'Output has been written in ../data/tmp/1969_clean.txt!'
+# Vérifier le résultat
+with open(os.path.join(temp_path, f'{year}_clean.txt'), 'r', encoding='utf-8') as f:
+    after = f.read()
+
+frequencies = Counter(after.split())
+print(frequencies.most_common(10))
+[('TÉL', 1922), ('BRUXELLES', 1395), ('RUE', 1168), ('APP', 914), ('BRUX', 677), ('ANS', 637), ('GAR', 582), ('HEURES', 486), ('TRÈS', 468), ('PRÉS', 466)]
+Nuage de mots
+Afficher les termes les plus fréquents
+frequencies = Counter(after.split())
+print(frequencies.most_common(10))
+[('TÉL', 1922), ('BRUXELLES', 1395), ('RUE', 1168), ('APP', 914), ('BRUX', 677), ('ANS', 637), ('GAR', 582), ('HEURES', 486), ('TRÈS', 468), ('PRÉS', 466)]
+Créer, stocker et afficher le nuage de mots
+cloud = WordCloud(width=2000, height=1000, background_color='white').generate_from_frequencies(frequencies)
+cloud.to_file(os.path.join(temp_path, f"{year}.png"))
+Image(filename=os.path.join(temp_path, f"{year}.png"))
+Reconnaissance d'entités nommées avec SpaCy
+La documentation est accessible ici: https://spacy.io/api
+
+Imports
+from collections import defaultdict
+import sys
+import spacy
+from spacy.lang.fr.examples import sentences
+2023-11-06 19:10:17.414043: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+/Users/apple/Documents/tac/module3/s3_ner.ipynb Cellule 4 line 3
+      <a href='vscode-notebook-cell:/Users/apple/Documents/tac/module3/s3_ner.ipynb#W3sZmlsZQ%3D%3D?line=0'>1</a> from collections import defaultdict
+      <a href='vscode-notebook-cell:/Users/apple/Documents/tac/module3/s3_ner.ipynb#W3sZmlsZQ%3D%3D?line=1'>2</a> import sys
+----> <a href='vscode-notebook-cell:/Users/apple/Documents/tac/module3/s3_ner.ipynb#W3sZmlsZQ%3D%3D?line=2'>3</a> import spacy
+      <a href='vscode-notebook-cell:/Users/apple/Documents/tac/module3/s3_ner.ipynb#W3sZmlsZQ%3D%3D?line=3'>4</a> from spacy.lang.fr.examples import sentences
+
+File ~/Documents/tac/tac_venv/lib/python3.11/site-packages/spacy/__init__.py:14
+     11 from thinc.api import prefer_gpu, require_gpu, require_cpu  # noqa: F401
+     12 from thinc.api import Config
+---> 14 from . import pipeline  # noqa: F401
+     15 from .cli.info import info  # noqa: F401
+     16 from .glossary import explain  # noqa: F401
+
+File ~/Documents/tac/tac_venv/lib/python3.11/site-packages/spacy/pipeline/__init__.py:1
+----> 1 from .attributeruler import AttributeRuler
+      2 from .dep_parser import DependencyParser
+      3 from .edit_tree_lemmatizer import EditTreeLemmatizer
+
+File ~/Documents/tac/tac_venv/lib/python3.11/site-packages/spacy/pipeline/attributeruler.py:6
+      3 import srsly
+      4 from pathlib import Path
+----> 6 from .pipe import Pipe
+      7 from ..errors import Errors
+      8 from ..training import Example
+
+File ~/Documents/tac/tac_venv/lib/python3.11/site-packages/spacy/pipeline/pipe.pyx:1, in init spacy.pipeline.pipe()
+
+File ~/Documents/tac/tac_venv/lib/python3.11/site-packages/spacy/vocab.pyx:1, in init spacy.vocab()
+
+File ~/Documents/tac/tac_venv/lib/python3.11/site-packages/spacy/tokens/__init__.py:1
+----> 1 from .doc import Doc
+      2 from .token import Token
+      3 from .span import Span
+
+File ~/Documents/tac/tac_venv/lib/python3.11/site-packages/spacy/tokens/doc.pyx:36, in init spacy.tokens.doc()
+
+File ~/Documents/tac/tac_venv/lib/python3.11/site-packages/spacy/schemas.py:158
+    154         obj = converted
+    155     return validate(TokenPatternSchema, {"pattern": obj})
+--> 158 class TokenPatternString(BaseModel):
+    159     REGEX: Optional[StrictStr] = Field(None, alias="regex")
+    160     IN: Optional[List[StrictStr]] = Field(None, alias="in")
+
+File ~/Documents/tac/tac_venv/lib/python3.11/site-packages/pydantic/main.py:292, in ModelMetaclass.__new__(mcs, name, bases, namespace, **kwargs)
+    290 cls = super().__new__(mcs, name, bases, new_namespace, **kwargs)
+    291 # set __signature__ attr only for model class, but not for its instances
+--> 292 cls.__signature__ = ClassAttribute('__signature__', generate_model_signature(cls.__init__, fields, config))
+    293 if resolve_forward_refs:
+    294     cls.__try_update_forward_refs__()
+
+File ~/Documents/tac/tac_venv/lib/python3.11/site-packages/pydantic/utils.py:258, in generate_model_signature(init, fields, config)
+    256         # TODO: replace annotation with actual expected types once #1055 solved
+    257         kwargs = {'default': field.default} if not field.required else {}
+--> 258         merged_params[param_name] = Parameter(
+    259             param_name, Parameter.KEYWORD_ONLY, annotation=field.outer_type_, **kwargs
+    260         )
+    262 if config.extra is Extra.allow:
+    263     use_var_kw = True
+
+File /Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/inspect.py:2725, in Parameter.__init__(self, name, kind, default, annotation)
+   2723 is_keyword = iskeyword(name) and self._kind is not _POSITIONAL_ONLY
+   2724 if is_keyword or not name.isidentifier():
+-> 2725     raise ValueError('{!r} is not a valid parameter name'.format(name))
+   2727 self._name = name
+
+ValueError: 'in' is not a valid parameter name
+nlp = spacy.load('fr_core_news_md')
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+/Users/apple/Documents/tac/module3/s3_ner.ipynb Cellule 5 line 1
+----> <a href='vscode-notebook-cell:/Users/apple/Documents/tac/module3/s3_ner.ipynb#W4sZmlsZQ%3D%3D?line=0'>1</a> nlp = spacy.load('fr_core_news_md')
+
+NameError: name 'spacy' is not defined
+Exemple sur un corpus de test fourni par SpaCy
+# Imprimer le corpus de Spacy
+sentences
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+/Users/apple/Documents/tac/module3/s3_ner.ipynb Cellule 7 line 2
+      <a href='vscode-notebook-cell:/Users/apple/Documents/tac/module3/s3_ner.ipynb#W6sZmlsZQ%3D%3D?line=0'>1</a> # Imprimer le corpus de Spacy
+----> <a href='vscode-notebook-cell:/Users/apple/Documents/tac/module3/s3_ner.ipynb#W6sZmlsZQ%3D%3D?line=1'>2</a> sentences
+
+NameError: name 'sentences' is not defined
+# Isoler la première phrase
+sent = sentences[0]
+sent
+# Traiter la phrase avec Spacy
+doc = nlp(sent)
+type(doc)
+doc.text
+doc.to_json()
+# Appliquer le test sur toutes les phrases
+for sent in sentences:
+    doc = nlp(sent)
+    entities = []
+    for ent in doc.ents:
+        entities.append(f"{ent.text} ({ent.label_})")
+    if entities:
+        print(f"'{doc.text}' contient les entités suivantes : {', '.join(entities)}")
+    else:
+        print(f"'{doc.text}' ne contient aucune entité")
+Appliquer la reconnaissance d'entités nommées sur notre corpus
+# Charger le texte
+n=100000
+text = open("../data/all.txt", encoding='utf-8').read()[:n]
+%%time
+# Traiter le texte
+
+doc = nlp(text)
+# Compter les entités
+people = defaultdict(int)
+locations = defaultdict(int)
+organizations = defaultdict(int)
+
+for ent in doc.ents:
+    if ent.label_ == "PER" and len(ent.text) > 3:
+        people[ent.text] += 1
+    elif ent.label_ == "LOC" and len(ent.text) > 3:
+        locations[ent.text] += 1
+    elif ent.label_ == "ORG" and len(ent.text) > 3:
+        organizations[ent.text] += 1
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+/Users/apple/Documents/tac/module3/s3_ner.ipynb Cellule 17 line 2
+      <a href='vscode-notebook-cell:/Users/apple/Documents/tac/module3/s3_ner.ipynb#X22sZmlsZQ%3D%3D?line=0'>1</a> # Compter les entités
+----> <a href='vscode-notebook-cell:/Users/apple/Documents/tac/module3/s3_ner.ipynb#X22sZmlsZQ%3D%3D?line=1'>2</a> people = defaultdict(int)
+      <a href='vscode-notebook-cell:/Users/apple/Documents/tac/module3/s3_ner.ipynb#X22sZmlsZQ%3D%3D?line=2'>3</a> locations = defaultdict(int)
+      <a href='vscode-notebook-cell:/Users/apple/Documents/tac/module3/s3_ner.ipynb#X22sZmlsZQ%3D%3D?line=3'>4</a> organizations = defaultdict(int)
+
+NameError: name 'defaultdict' is not defined
+# Trier et imprimer
+
+sorted_people = sorted(people.items(), key=lambda kv: kv[1], reverse=True)
+sorted_locations = sorted(locations.items(), key=lambda kv: kv[1], reverse=True)
+sorted_organizations = sorted(organizations.items(), key=lambda kv: kv[1], reverse=True)
+
+print("Les personnes les plus mentionnées dans le corpus :")
+for person, freq in sorted_people[:50]:
+    print(f"{person} apparait {freq} fois")
+
+print("\nLes lieux les plus mentionnés dans le corpus :")
+for location, freq in sorted_locations[:50]:
+    print(f"{location} apparait {freq} fois")
+
+print("\nLes organisations les plus mentionnées dans le corpus :")
+for organization, freq in sorted_organizations[:50]:
+    print(f"{organization} apparait {freq} fois")
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+/Users/apple/Documents/tac/module3/s3_ner.ipynb Cellule 18 line 3
+      <a href='vscode-notebook-cell:/Users/apple/Documents/tac/module3/s3_ner.ipynb#X23sZmlsZQ%3D%3D?line=0'>1</a> # Trier et imprimer
+----> <a href='vscode-notebook-cell:/Users/apple/Documents/tac/module3/s3_ner.ipynb#X23sZmlsZQ%3D%3D?line=2'>3</a> sorted_people = sorted(people.items(), key=lambda kv: kv[1], reverse=True)
+      <a href='vscode-notebook-cell:/Users/apple/Documents/tac/module3/s3_ner.ipynb#X23sZmlsZQ%3D%3D?line=3'>4</a> sorted_locations = sorted(locations.items(), key=lambda kv: kv[1], reverse=True)
+      <a href='vscode-notebook-cell:/Users/apple/Documents/tac/module3/s3_ner.ipynb#X23sZmlsZQ%3D%3D?line=4'>5</a> sorted_organizations = sorted(organizations.items(), key=lambda kv: kv[1], reverse=True)
+
+NameError: name 'people' is not defined
+Exercice: essayez de lister les lieux (LOC) et les organisations (ORG) les plus mentionnées dans le corpus
+Sentiment analysis
+
+1. Textblob-FR
+
+Documentation: https://textblob.readthedocs.io/en/dev/
+
+Imports
+import sys
+from textblob import Blobber
+from textblob_fr import PatternTagger, PatternAnalyzer
+# Importer les bibliothèques nécessaires
+import os
+
+# Chemin vers les fichiers de l'année 1969
+year = 1969
+data_path = '../data/txt'
+txts = [f for f in os.listdir(data_path) if os.path.isfile(os.path.join(data_path, f)) and str(year) in f]
+
+# Sélectionner arbitrairement 10 phrases dans les articles de l'année 1969
+selected_phrases = []
+for txt in txts[:10]:
+    with open(os.path.join(data_path, txt), 'r', encoding='utf-8') as f:
+        content = f.read()
+        sentences = content.split('.')
+        for sentence in sentences[:5]:
+            selected_phrases.append(sentence.strip())
+
+# Analyser le sentiment des phrases sélectionnées
+for phrase in selected_phrases:
+    print(f"Analyse de la phrase : {phrase}")
+    get_sentiment(phrase)
+    sentiment_analyser(phrase)
+Analyse de la phrase : Ets VANDEN BOUDE s
+This text is neutral and perfectly objective.
+Analyse de la phrase : a
+This text is neutral and perfectly objective.
+Analyse de la phrase : *700, chaussée de Mons Anderlectit * Bruxelles 7 demandent : ELECTRICIENS QUALIFIES (installation basse tension) PLOMBIERS
+This text is 20% negative and perfectly objective.
+Analyse de la phrase : sachant conduire si possible MAGASINIERS (pour dépôt rue de la Roue) Place stable et d’avenir dans une firme en » continuelle expansion
+This text is 0% negative and 0.425% subjective.
+Analyse de la phrase : Bonne rémunération
+This text is 70% positive and 0.7% subjective.
+Analyse de la phrase : 13 SAMEDI 22 NOVEMBRE 1969 LE SOIE itt Devenir eccountant chez ITT, c'est être, en mesure, professionnellement, de prendre ses responsabilités
+This text is neutral and perfectly objective.
+Analyse de la phrase : C'est aussi savoir travailler en équipe
+This text is neutral and perfectly objective.
+Analyse de la phrase : Comme sait la faire une personnalité à la fols souple et dynamique
+This text is 5% positive and perfectly objective.
+Analyse de la phrase : Et sûre de se valeur
+This text is 20% positive and 0.5% subjective.
+Analyse de la phrase : Faut-Il Insister sur l'avenir offert ? Vous serez chez ITT, c'est tout dire
+This text is 22% positive and 0.1% subjective.
+Analyse de la phrase : DIMANCHE 16 LUNDI 17 FEVRIER 1969 LE SOIR ~rr~rr
+This text is neutral and perfectly objective.
+Analyse de la phrase : SOCIETE INDUSTRIELLE ' à Br'uxélles 3 ' JEUNE ELEMENT DE VALEUR Envoyés votre curr
+This text is 18% positive and 0.25% subjective.
+Analyse de la phrase : vitae manuscrit sous réf
+This text is neutral and perfectly objective.
+Analyse de la phrase : 154 à '« ‘si 'V v recherche ? ’-r 1 ' #•* "% *■* ? ? A :: * 'f”
+This text is 10% positive and 0.6% subjective.
+Analyse de la phrase : GRADUAT EN SCIÈNCIÎSiECpNO^pÇS oy ^UiyAïiENT
+This text is neutral and perfectly objective.
+Analyse de la phrase : LE SOIR JEUDI 27 FEVRIER 1969 LE SOIR Quelle que soit l’heure à laquelle vous achetez «LE SOIR», réclamez au vendeur LA DERNIERE EDITION PARUE
+This text is 29% negative and 0.2% subjective.
+Analyse de la phrase : FENNY GIRL U n’y a pas de petits sujets quand on est orfèvre en sa partie et qu’on dispose de grands moyens
+This text is 8% positive and 0.13333333333333333% subjective.
+Analyse de la phrase : William Wyler, le réalisateur de Funny Girl, avait un carré d’as dans son jeu
+This text is neutral and perfectly objective.
+Analyse de la phrase : Son savoir-faire, d’abord, illustré par maints films à très large succès; ensuite une comédie musicale qui a tenu l’affiche pendant quatre ans, à Broadway; puis un budget
+This text is 10% positive and 0.20000000000000004% subjective.
+Analyse de la phrase : 
+This text is neutral and perfectly objective.
+Analyse de la phrase : t ■« Roosevelt d* la Forêt, A la* app
+This text is neutral and perfectly objective.
+Analyse de la phrase : ht L Bit
+This text is neutral and perfectly objective.
+Analyse de la phrase : müq
+This text is neutral and perfectly objective.
+Analyse de la phrase : gr, S ter
+This text is neutral and perfectly objective.
+Analyse de la phrase : , placards ©rient, 2 ch
+This text is neutral and perfectly objective.
+Analyse de la phrase : LE SOIR -MARDI 29 AVÛIL 1-969V v
+This text is neutral and perfectly objective.
+Analyse de la phrase : * v- Une grande épreuve de vulgarisation et de prospection du tennis pour les jeunes XIII" TOURNOI DE L’ESPERANCE A:/
+This text is 31% positive and 0.30000000000000004% subjective.
+Analyse de la phrase : ' v » ■■ ■ v ; • ,
+This text is neutral and perfectly objective.
+Analyse de la phrase : 1 » , ’ ■ ■ y , - Organisé par LE SOIR sous le contrôle de la Fédération Royale Belge de Laum-Tennis Plus et mieux : 267 éliminatoires pour 248, l'an dernier On peut dire que jusqu’au dernier moment, clubs et écoles de tous les coins de la Belgique ont multiplié leurs efforts pour être de la grande fête tennistique pour moins de 20 ans qu’est le Tournoi de l’Espérance
+This text is 9% positive and 0.2125% subjective.
+Analyse de la phrase : Rien n’a pu décourager organisateurs et concurrents, car il faut le souligner, jamais les conditions climatiques n’ont été aussi défavorables qu’en ce printemps Î rtuvieux
+This text is 35% negative and perfectly objective.
+Analyse de la phrase : LE S OIR MARDI 4 NOVEMBRE 1969 /■ i'
+This text is neutral and perfectly objective.
+Analyse de la phrase : Monsieur et Madame Jules DEGROOF, Madame Joseph DEGROOF, Madame Maurice ENGWEGEN, ses frère et belles-sœurs; Monsieur et Madame Jean BASTIN et leurs enfants
+This text is neutral and perfectly objective.
+Analyse de la phrase : Monsieur et Madame Marcel DEGROOF et leurs enfants
+This text is neutral and perfectly objective.
+Analyse de la phrase : Monsieur et Madame Jean-François DEGROOF et leurs enfants, tes neveux, nièces, petits-neveux et petites-nièces; Monsieur et Madame André VERHAEGEN, leurs enfants et petits-enfants, Monsieur Louis VERHAEGEN, ses enfants et petits-enfants
+This text is neutral and perfectly objective.
+Analyse de la phrase : Madame Georges DOPERE, Monsieur et Madame Robert DUBUS, ses cousins et cousines; Les familles DEGROOF et VERHOEVEN, Madame Mla DEYADDER, sa très dévouée gouvernante; Monsieur Maurice WAUTERS, son fidèle chauffeur; voua font part, avec une profonde douleur, qu'il a plu au Seigneur de rappeler a Lui l'âme de son fidèle serviteur MONSIEUR JEAN DEGROOF Banquier Associé-gérant de Messieurs Jean DEGROOF et C u (anct
+This text is 12% positive and 0.5375% subjective.
+Analyse de la phrase : MERCREDI 19 MARS 1969 LE SOIR 3 • I
+This text is neutral and perfectly objective.
+Analyse de la phrase : 'ACTUALITÉ INTERNATIONALE LES PAYS DU PACTE DE VARSOVIE proposent une conférence européenne (VOIR DEBUT EN PREMIERE PAGEJ Le communiqué final du « sommet » de Budapest « L’établissement de relations de bon voisinage, de la confiance et de la compréhension mutuelles, dépend de la volonté et des efforts des peuples et des gouvernements européens
+This text is 16% positive and 0.14999999999999997% subjective.
+Analyse de la phrase : L’Europe contemporaine, issue des traités conclus après la Deuxième Guerre mondiale, représentant une trentaine de grands et de petits Etats, différents par leur structure sociale, leur situation géographique et leurs intérêts, mais obligés de par leur passé de vivre côte à côte, fait que rien ne pourra changer
+This text is 12% positive and 0.1125% subjective.
+Analyse de la phrase : » Un nombre, tou jours plus grand de gouvernements,, de Parlèments, de partis et d’hommes d’Etat commencent à comprendre le sens de leur responsabilité face aux générations montantes, pour interdire en Europe tout conflit armé
+This text is 8% positive and 0.13999999999999999% subjective.
+Analyse de la phrase : » Mais il subsiste encore en Europe dès forces qui s’opposent à une solution des problèmes en suspens par la- voie des négociations, leur préférant la création de nouvelles forces armées, de fusées, de programmes militaires
+This text is 21% negative and 0.31000000000000005% subjective.
+Analyse de la phrase : I 10 ib sont VENDREDI Wt NOVEMBRE 1969 AVENUE fi'OftO $
+This text is neutral and perfectly objective.
+Analyse de la phrase : EA9an€ttracu>ttn *eoocn#< 'JUSTINE' OEUMMNtt DÜfWîlL AffôüK AIMEE^ OIRKBOGAROE/ROBEftTFORSTER ANNA KARINA'PHIUPPE NOIRET'MIGHAELVORK JOH
+This text is 40% positive and 0.4% subjective.
+Analyse de la phrase : NVEJ!SOS'lA(XAl6ERIS(Wi'KOft6£BW<£ft'M!CHMl DL’NX NBA Utt
+This text is neutral and perfectly objective.
+Analyse de la phrase : *J£C â«V
+This text is neutral and perfectly objective.
+Analyse de la phrase : ' etvoao S££RJ«K'6Ê0aÊE CUKOft^JêaRÏGOlBSM-
+This text is neutral and perfectly objective.
+Analyse de la phrase : FABRIQUE DE SALONS engage de suite REPRESENTANT Secteur : Anvers - Limbourg Nous demandons: — Agé de 25 k 40 an*
+This text is neutral and perfectly objective.
+Analyse de la phrase : — Dynamique — persévérant
+This text is neutral and perfectly objective.
+Analyse de la phrase : —- Disposant d’un véhicule en bon état
+This text is 70% positive and 0.7% subjective.
+Analyse de la phrase : *— Santé excellente
+This text is 50% positive and 0.9% subjective.
+Analyse de la phrase : — L’introduction serait un avantage
+This text is neutral and perfectly objective.
+Création d'une fonction get_sentiment
+tb = Blobber(pos_tagger=PatternTagger(), analyzer=PatternAnalyzer())
+
+def get_sentiment(input_text):
+    blob = tb(input_text)
+    polarity, subjectivity = blob.sentiment
+    polarity_perc = f"{100*abs(polarity):.0f}"
+    subjectivity_perc = f"{100*subjectivity:.0f}"
+    if polarity > 0:
+        polarity_str = f"{polarity_perc}% positive"
+    elif polarity < 0:
+        polarity_str = f"{polarity_perc}% negative"
+    else:
+        polarity_str = "neutral"
+    if subjectivity > 0:
+        subjectivity_str = f"{subjectivity}% subjective"
+    else:
+        subjectivity_str = "perfectly objective"
+    print(f"This text is {polarity_str} and {subjectivity_str}.")
+Analyser le sentiment d'une phrase
+get_sentiment("Ce journal est vraiment super intéressant.")
+This text is 65% positive and 0.75% subjective.
+get_sentiment("Cette phrase est négative et je ne suis pas content !")
+This text is 41% negative and 0.6% subjective.
+2. Utilisation de transformers
+
+Documentation: https://github.com/TheophileBlard/french-sentiment-analysis-with-bert
+
+!! Si le code ne tourne pas sur votre machine, vous pouvez le tester directement sur Google Colab en utilisant ce lien !!
+
+Le modèle peut également être testé en ligne sur HuggingFace
+
+Installation des librairies et imports
+!pip install tensorflow
+!pip install sentencepiece
+!pip install transformers
+
+from transformers import AutoTokenizer, TFAutoModelForSequenceClassification
+from transformers import pipeline
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+Requirement already satisfied: tensorflow in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (2.14.0)
+Requirement already satisfied: absl-py>=1.0.0 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (2.0.0)
+Requirement already satisfied: astunparse>=1.6.0 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (1.6.3)
+Requirement already satisfied: flatbuffers>=23.5.26 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (23.5.26)
+Requirement already satisfied: gast!=0.5.0,!=0.5.1,!=0.5.2,>=0.2.1 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (0.5.4)
+Requirement already satisfied: google-pasta>=0.1.1 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (0.2.0)
+Requirement already satisfied: h5py>=2.9.0 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (3.10.0)
+Requirement already satisfied: libclang>=13.0.0 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (16.0.6)
+Requirement already satisfied: ml-dtypes==0.2.0 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (0.2.0)
+Requirement already satisfied: numpy>=1.23.5 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (1.26.0)
+Requirement already satisfied: opt-einsum>=2.3.2 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (3.3.0)
+Requirement already satisfied: packaging in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (23.2)
+Requirement already satisfied: protobuf!=4.21.0,!=4.21.1,!=4.21.2,!=4.21.3,!=4.21.4,!=4.21.5,<5.0.0dev,>=3.20.3 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (4.24.4)
+Requirement already satisfied: setuptools in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (65.5.0)
+Requirement already satisfied: six>=1.12.0 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (1.12.0)
+Requirement already satisfied: termcolor>=1.1.0 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (2.3.0)
+Requirement already satisfied: typing-extensions>=3.6.6 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (4.8.0)
+Requirement already satisfied: wrapt<1.15,>=1.11.0 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (1.14.1)
+Requirement already satisfied: tensorflow-io-gcs-filesystem>=0.23.1 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (0.34.0)
+Requirement already satisfied: grpcio<2.0,>=1.24.3 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (1.59.0)
+Requirement already satisfied: tensorboard<2.15,>=2.14 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (2.14.1)
+Requirement already satisfied: tensorflow-estimator<2.15,>=2.14.0 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (2.14.0)
+Requirement already satisfied: keras<2.15,>=2.14.0 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorflow) (2.14.0)
+Requirement already satisfied: wheel<1.0,>=0.23.0 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from astunparse>=1.6.0->tensorflow) (0.41.2)
+Requirement already satisfied: google-auth<3,>=1.6.3 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorboard<2.15,>=2.14->tensorflow) (2.23.3)
+Requirement already satisfied: google-auth-oauthlib<1.1,>=0.5 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorboard<2.15,>=2.14->tensorflow) (1.0.0)
+Requirement already satisfied: markdown>=2.6.8 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorboard<2.15,>=2.14->tensorflow) (3.5)
+Requirement already satisfied: requests<3,>=2.21.0 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorboard<2.15,>=2.14->tensorflow) (2.31.0)
+Requirement already satisfied: tensorboard-data-server<0.8.0,>=0.7.0 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorboard<2.15,>=2.14->tensorflow) (0.7.2)
+Requirement already satisfied: werkzeug>=1.0.1 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from tensorboard<2.15,>=2.14->tensorflow) (3.0.0)
+Requirement already satisfied: cachetools<6.0,>=2.0.0 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from google-auth<3,>=1.6.3->tensorboard<2.15,>=2.14->tensorflow) (5.3.2)
+Requirement already satisfied: pyasn1-modules>=0.2.1 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from google-auth<3,>=1.6.3->tensorboard<2.15,>=2.14->tensorflow) (0.3.0)
+Requirement already satisfied: rsa<5,>=3.1.4 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from google-auth<3,>=1.6.3->tensorboard<2.15,>=2.14->tensorflow) (4.9)
+Requirement already satisfied: requests-oauthlib>=0.7.0 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from google-auth-oauthlib<1.1,>=0.5->tensorboard<2.15,>=2.14->tensorflow) (1.3.1)
+Requirement already satisfied: charset-normalizer<4,>=2 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from requests<3,>=2.21.0->tensorboard<2.15,>=2.14->tensorflow) (3.3.0)
+Requirement already satisfied: idna<4,>=2.5 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from requests<3,>=2.21.0->tensorboard<2.15,>=2.14->tensorflow) (3.4)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from requests<3,>=2.21.0->tensorboard<2.15,>=2.14->tensorflow) (2.0.6)
+Requirement already satisfied: certifi>=2017.4.17 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from requests<3,>=2.21.0->tensorboard<2.15,>=2.14->tensorflow) (2023.7.22)
+Requirement already satisfied: MarkupSafe>=2.1.1 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from werkzeug>=1.0.1->tensorboard<2.15,>=2.14->tensorflow) (2.1.3)
+Requirement already satisfied: pyasn1<0.6.0,>=0.4.6 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from pyasn1-modules>=0.2.1->google-auth<3,>=1.6.3->tensorboard<2.15,>=2.14->tensorflow) (0.5.0)
+Requirement already satisfied: oauthlib>=3.0.0 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from requests-oauthlib>=0.7.0->google-auth-oauthlib<1.1,>=0.5->tensorboard<2.15,>=2.14->tensorflow) (3.2.2)
+DEPRECATION: textract 1.6.5 has a non-standard dependency specifier extract-msg<=0.29.*. pip 23.3 will enforce this behaviour change. A possible replacement is to upgrade to a newer version of textract or contact the author to suggest that they release a version with a conforming dependency specifiers. Discussion can be found at https://github.com/pypa/pip/issues/12063
+
+[notice] A new release of pip is available: 23.2.1 -> 23.3.1
+[notice] To update, run: pip install --upgrade pip
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+Requirement already satisfied: sentencepiece in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (0.1.99)
+DEPRECATION: textract 1.6.5 has a non-standard dependency specifier extract-msg<=0.29.*. pip 23.3 will enforce this behaviour change. A possible replacement is to upgrade to a newer version of textract or contact the author to suggest that they release a version with a conforming dependency specifiers. Discussion can be found at https://github.com/pypa/pip/issues/12063
+
+[notice] A new release of pip is available: 23.2.1 -> 23.3.1
+[notice] To update, run: pip install --upgrade pip
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+Requirement already satisfied: transformers in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (4.34.1)
+Requirement already satisfied: filelock in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from transformers) (3.12.4)
+Requirement already satisfied: huggingface-hub<1.0,>=0.16.4 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from transformers) (0.17.3)
+Requirement already satisfied: numpy>=1.17 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from transformers) (1.26.0)
+Requirement already satisfied: packaging>=20.0 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from transformers) (23.2)
+Requirement already satisfied: pyyaml>=5.1 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from transformers) (6.0.1)
+Requirement already satisfied: regex!=2019.12.17 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from transformers) (2023.10.3)
+Requirement already satisfied: requests in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from transformers) (2.31.0)
+Requirement already satisfied: tokenizers<0.15,>=0.14 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from transformers) (0.14.1)
+Requirement already satisfied: safetensors>=0.3.1 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from transformers) (0.4.0)
+Requirement already satisfied: tqdm>=4.27 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from transformers) (4.66.1)
+Requirement already satisfied: fsspec in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from huggingface-hub<1.0,>=0.16.4->transformers) (2023.10.0)
+Requirement already satisfied: typing-extensions>=3.7.4.3 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from huggingface-hub<1.0,>=0.16.4->transformers) (4.8.0)
+Requirement already satisfied: charset-normalizer<4,>=2 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from requests->transformers) (3.3.0)
+Requirement already satisfied: idna<4,>=2.5 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from requests->transformers) (3.4)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from requests->transformers) (2.0.6)
+Requirement already satisfied: certifi>=2017.4.17 in /Users/apple/Documents/tac/tac_venv/lib/python3.11/site-packages (from requests->transformers) (2023.7.22)
+DEPRECATION: textract 1.6.5 has a non-standard dependency specifier extract-msg<=0.29.*. pip 23.3 will enforce this behaviour change. A possible replacement is to upgrade to a newer version of textract or contact the author to suggest that they release a version with a conforming dependency specifiers. Discussion can be found at https://github.com/pypa/pip/issues/12063
+
+[notice] A new release of pip is available: 23.2.1 -> 23.3.1
+[notice] To update, run: pip install --upgrade pip
+Chargement du modèle
+tokenizer = AutoTokenizer.from_pretrained("tblard/tf-allocine", use_pt=True)
+model = TFAutoModelForSequenceClassification.from_pretrained("tblard/tf-allocine")
+
+sentiment_analyser = pipeline('sentiment-analysis', model=model, tokenizer=tokenizer)
+All model checkpoint layers were used when initializing TFCamembertForSequenceClassification.
+
+All the layers of TFCamembertForSequenceClassification were initialized from the model checkpoint at tblard/tf-allocine.
+If your task is similar to the task the model of the checkpoint was trained on, you can already use TFCamembertForSequenceClassification for predictions without further training.
+Analyser le sentiment d'une phrase
+sentiment_analyser("Ce journal est vraiment super intéressant.")
+[{'label': 'POSITIVE', 'score': 0.9936434030532837}]
+sentiment_analyser("Cette phrase est négative et je ne suis pas content !")
+[{'label': 'NEGATIVE', 'score': 0.9664189219474792}]
+ 
