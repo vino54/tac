@@ -1,0 +1,263 @@
+# Extraction de Keywords
+## Imports
+import os
+import yake
+# Choisir une année
+year = 1960
+## Extraire les mots clés d'un document avec Yake
+https://github.com/LIAAD/yake
+# Instantier l'extracteur de mots clés
+kw_extractor = yake.KeywordExtractor(lan="fr", top=50)
+kw_extractor
+# Lister les Fichiers
+data_path = "../data/txt/"
+files = os.listdir(data_path)
+# Imprimer le nombre de fichiers identifiés
+len(files)
+# Les dix premiers fichiers
+files[:10]
+# Choisir un fichier
+this_file = files[0]
+this_file
+# Récupérer le texte du fichier
+text = open(os.path.join(data_path, this_file), 'r', encoding='utf-8').read()
+text[:500]
+# Extraire les mots clés de ce texte
+keywords = kw_extractor.extract_keywords(text)
+keywords
+# Ne garder que les mots-clés relatifs à l'année 1960
+kept = []
+for kw, score in keywords:
+    if '1960' in kw:
+        kept.append(kw)
+kept
+## Faire la même opération sur tous les documents
+import chardet
+
+for f in sorted(files)[:10]:
+    with open(os.path.join(data_path, f), 'rb') as file:
+        raw_data = file.read()
+        result = chardet.detect(raw_data)
+        encoding = result['encoding']
+    
+    try:
+        text = raw_data.decode(encoding)
+    except UnicodeDecodeError:
+        print(f"Error reading {f} with detected encoding {encoding}")
+        continue
+    
+    keywords = kw_extractor.extract_keywords(text)
+    kept = []
+    for kw, score in keywords:
+        if '1960' in kw:
+            kept.append(kw)
+    print(f"{f} mentions these keywords related to 1960: {', '.join(kept)}...")
+# Nuages de mots
+## Imports et stopwords
+from collections import Counter
+from wordcloud import WordCloud
+import os
+import nltk
+nltk.download('stopwords')
+from nltk.corpus import stopwords
+from IPython.display import Image
+# Stopwords (Idem que dans s1)
+sw = stopwords.words("french")
+sw += ["les", "plus", "cette", "fait", "faire", "être", "deux", "comme", "dont", "tout",
+       "ils", "bien", "sans", "peut", "tous", "après", "ainsi", "donc", "cet", "sous",
+       "celle", "entre", "encore", "toutes", "pendant", "moins", "dire", "cela", "non",
+       "faut", "trois", "aussi", "dit", "avoir", "doit", "contre", "depuis", "autres",
+       "van", "het", "autre", "jusqu", "ville", "rossel", "dem"]
+sw = set(sw)
+
+## Créer un fichier contenant le texte de tous les journaux d'une année donnée
+# Choisir une année
+year = 1960
+# Lister les fichiers de cette année
+data_path = '../data'
+txt_path = '../data/txt'
+txts = [f for f in os.listdir(txt_path) if os.path.isfile(os.path.join(txt_path, f)) and str(year) in f]
+len(txts)
+# Stocker le contenu de ces fichiers dans une liste
+content_list = []
+for txt in txts:
+    with open(os.path.join(txt_path, txt), 'r', encoding='utf-8') as f:
+        content_list.append(f.read())
+# Compter le nombre d'éléments (=fichiers) dans la liste
+len(content_list)
+# Imprimer les 200 premiers caractères du contenu du premier fichier
+content_list[0][0:200]
+# Ecrire tout le contenu dans un fichier temporaire
+temp_path = '../data/tmp'
+if not os.path.exists(temp_path):
+    os.mkdir(temp_path)
+with open(os.path.join(temp_path, f'{year}.txt'), 'w', encoding='utf-8') as f:
+    f.write(' '.join(content_list))
+# Imprimer le contenu du fichier et constater les "déchets"
+with open(os.path.join(temp_path, f'{year}.txt'), 'r', encoding='utf-8') as f:
+    before = f.read()
+
+before[:500]
+## Nettoyer le fichier à l'aide d'une fonction de nettoyage
+### Créer la fonction de nettoyage (à adapter)
+def clean_text(year, folder=None):
+    if folder is None:
+        input_path = f"{year}.txt"
+        output_path = f"{year}_clean.txt"
+    else:
+        input_path = f"{folder}/{year}.txt"
+        output_path = f"{folder}/{year}_clean.txt"
+    output = open(output_path, "w", encoding='utf-8')
+    with open(input_path, 'r', encoding='utf-8') as f:
+        text = f.read()
+        words = nltk.wordpunct_tokenize(text)
+        kept = [w.upper() for w in words if len(w) > 2 and w.isalpha() and w.lower() not in sw]
+        kept_string = " ".join(kept)
+        output.write(kept_string)
+    return f'Output has been written in {output_path}!'
+### Appliquer la fonction sur le fichier complet de l'année
+clean_text(year, folder=temp_path)
+# Vérifier le résultat
+with open(os.path.join(temp_path, f'{year}_clean.txt'), 'r', encoding='utf-8') as f:
+    after = f.read()
+
+frequencies = Counter(after.split())
+print(frequencies.most_common(10))
+## Nuage de mots
+### Afficher les termes les plus fréquents
+
+frequencies = Counter(after.split())
+print(frequencies.most_common(10))
+### Créer, stocker et afficher le nuage de mots
+cloud = WordCloud(width=2000, height=1000, background_color='white').generate_from_frequencies(frequencies)
+cloud.to_file(os.path.join(temp_path, f"{year}.png"))
+Image(filename=os.path.join(temp_path, f"{year}.png"))
+# Reconnaissance d'entités nommées avec SpaCy
+La documentation est accessible ici: https://spacy.io/api
+## Imports
+from collections import defaultdict
+import sys
+import spacy
+from spacy.lang.fr.examples import sentences
+nlp = spacy.load('fr_core_news_md')
+## Exemple sur un corpus de test fourni par SpaCy
+# Imprimer le corpus de Spacy
+sentences
+# Isoler la première phrase
+sent = sentences[0]
+sent
+# Traiter la phrase avec Spacy
+doc = nlp(sent)
+type(doc)
+doc.text
+doc.to_json()
+# Appliquer le test sur toutes les phrases
+for sent in sentences:
+    doc = nlp(sent)
+    entities = []
+    for ent in doc.ents:
+        entities.append(f"{ent.text} ({ent.label_})")
+    if entities:
+        print(f"'{doc.text}' contient les entités suivantes : {', '.join(entities)}")
+    else:
+        print(f"'{doc.text}' ne contient aucune entité")
+## Appliquer la reconnaissance d'entités nommées sur notre corpus
+# Charger le texte
+n=100000
+text = open("../data/tmp/1960.txt", encoding='utf-8').read()[:n]
+%%time
+# Traiter le texte
+
+doc = nlp(text)
+# Compter les entités
+people = defaultdict(int)
+locations = defaultdict(int)
+organizations = defaultdict(int)
+
+for ent in doc.ents:
+    if ent.label_ == "PER" and len(ent.text) > 3:
+        people[ent.text] += 1
+    elif ent.label_ == "LOC" and len(ent.text) > 3:
+        locations[ent.text] += 1
+    elif ent.label_ == "ORG" and len(ent.text) > 3:
+        organizations[ent.text] += 1
+# Trier et imprimer
+
+sorted_people = sorted(people.items(), key=lambda kv: kv[1], reverse=True)
+
+for person, freq in sorted_people[:50]:
+    print(f"{person} apparait {freq} fois dans le corpus")
+Exercice: essayez de lister les lieux (LOC) et les organisations (ORG) les plus mentionnées dans le corpus
+# Sentiment analysis 
+
+## 1. Textblob-FR
+
+Documentation: https://textblob.readthedocs.io/en/dev/
+
+### Imports
+import os
+import random
+import re  # Importer le module re pour les expressions régulières
+from textblob import Blobber
+from textblob_fr import PatternTagger, PatternAnalyzer
+
+
+# Initialiser Blobber avec PatternTagger et PatternAnalyzer
+tb = Blobber(pos_tagger=PatternTagger(), analyzer=PatternAnalyzer())
+
+def get_sentiment(input_text):
+    """Analyse le sentiment d'une phrase et retourne la polarité et la subjectivité."""
+    blob = tb(input_text)
+    polarity, subjectivity = blob.sentiment
+    polarity_perc = f"{100 * abs(polarity):.1f}"  # Affichage avec une décimale
+    subjectivity_perc = f"{100 * subjectivity:.1f}"  # Affichage avec une décimale
+    
+    if polarity > 0:
+        polarity_str = f"{polarity_perc}% positive"
+    elif polarity < 0:
+        polarity_str = f"{polarity_perc}% negative"
+    else:
+        polarity_str = "neutral"
+    
+    return polarity_str, subjectivity_perc
+
+# Chemin vers les fichiers de l'année 1960
+year = 1960
+data_path = '../data/txt'
+txts = [f for f in os.listdir(data_path) if os.path.isfile(os.path.join(data_path, f)) and str(year) in f]
+
+# Sélectionner 10 phrases aléatoires dans les articles de l'année 1960
+selected_phrases = []
+for txt in txts:
+    try:
+        with open(os.path.join(data_path, txt), 'r', encoding='utf-8') as f:
+            content = f.read()
+            # Diviser le contenu en phrases en utilisant une regex
+            sentences = re.split(r'(?<=[.!?]) +', content)
+            for sentence in sentences:
+                sentence = sentence.strip()
+                if sentence and sentence[0].isupper() and sentence.endswith(('.', '!', '?')):
+                    selected_phrases.append(sentence)
+    except Exception as e:
+        print(f"Erreur lors de la lecture de {txt}: {e}")
+
+# Si nous avons plus de 10 phrases, sélectionner aléatoirement 10 phrases
+if len(selected_phrases) > 10:
+    selected_phrases = random.sample(selected_phrases, 10)
+
+# Vérification des phrases sélectionnées
+print("Phrases sélectionnées pour l'analyse :")
+for phrase in selected_phrases:
+    print(f"- {phrase}")
+
+# Analyser le sentiment des phrases sélectionnées et afficher les résultats
+for phrase in selected_phrases:
+    polarity_str, subjectivity_str = get_sentiment(phrase)
+    
+    # Format de sortie ajusté pour éviter les valeurs manquantes
+    if "positive" in polarity_str or "negative" in polarity_str:
+        result = f"This text is {polarity_str.replace('positive', '').replace('negative', '')} and {subjectivity_str}% subjective."
+    else:
+        result = f"This text is {polarity_str} and {subjectivity_str}% subjective."
+
+    print(result)
